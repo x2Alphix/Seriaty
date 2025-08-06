@@ -1,0 +1,61 @@
+
+
+_G.World = "OnePiece"
+_G.Chapter = "1"
+
+_G.EndGameMethod = "Next" --// "Retry", "Leave"
+
+
+
+local Collection = {}; Collection._index = Collection
+
+local PlaceId = game.PlaceId
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerData = ReplicatedStorage.Player_Data[LocalPlayer.Name]
+
+local Values = ReplicatedStorage:WaitForChild("Values")
+local Replicated_PlayRoom = ReplicatedStorage:WaitForChild("PlayRoom")
+local Remote = ReplicatedStorage:WaitForChild("Remote")
+local Game_Data = Values:WaitForChild("Game")
+local Server = Remote:WaitForChild("Server")
+local PlayRoom = Server:WaitForChild("PlayRoom")
+local Units = Server:WaitForChild("Units")
+local OnGame = Server:WaitForChild("OnGame")
+local Voting = OnGame:WaitForChild("Voting")
+
+function Collection:IsLobby()
+	return Game_Data.World.Value == ""
+end
+function Collection:IsRoomExist()
+	return PlayRoom:FindFirstChild(LocalPlayer.Name)
+end
+
+if Collection:IsLobby() then
+
+	if Collection:IsRoomExist()
+		-- PlayRoom["Event"]:FireServer("Change-Chapter", { ["Chapter"] = "OnePiece_Chapter1"`{_G.World}_G.Chapter{_G.Chapter}` })
+		print(" START ")
+		print(`{_G.World}_G.Chapter{_G.Chapter}`)
+	else
+		Replicated_PlayRoom["Event"]:FireServer("Create")
+	end
+
+	-- PlayRoom["Event"]:FireServer("Create")
+	-- PlayRoom["Event"]:FireServer("Change-Chapter", { ["Chapter"] = "OnePiece_Chapter1" })
+
+
+
+else
+	if Game_Data.GameRunning.Value then
+		if not PlayerData.Data.AutoPlay.Value then
+			Units["AutoPlay"]:FireServer()
+		end
+	else
+		if _G.EndGameMethod == "Next" then
+			Voting["VoteNext"]:FireServer()
+		end
+	end
+end
