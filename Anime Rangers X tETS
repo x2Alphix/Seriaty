@@ -1,0 +1,1120 @@
+
+
+_G.World = "OnePiece"
+_G.Chapter = "1"
+
+_G.EndGameMethod = "Next" --// "Retry", "Leave"
+
+
+
+local Collection = {}; Collection._index = Collection
+
+local PlaceId = game.PlaceId
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local LocalPlayer = Players.LocalPlayer
+local PlayerData = ReplicatedStorage.Player_Data[LocalPlayer.Name]
+
+local Values = ReplicatedStorage:WaitForChild("Values")
+local Replicated_PlayRoom = ReplicatedStorage:WaitForChild("PlayRoom")
+local Remote = ReplicatedStorage:WaitForChild("Remote")
+local Game_Data = Values:WaitForChild("Game")
+local Server = Remote:WaitForChild("Server")
+local PlayRoom = Server:WaitForChild("PlayRoom")
+local Units = Server:WaitForChild("Units")
+local OnGame = Server:WaitForChild("OnGame")
+local Voting = OnGame:WaitForChild("Voting")
+
+function Collection:IsLobby()
+	return Game_Data.World.Value == ""
+end
+function Collection:IsRoomExist()
+	return PlayRoom:FindFirstChild(LocalPlayer.Name)
+end
+
+if Collection:IsLobby() then
+
+	if Collection:IsRoomExist()
+		--PlayRoom["Event"]:FireServer("Change-Chapter", { ["Chapter"] = "OnePiece_Chapter1"`{_G.World}_G.Chapter{_G.Chapter}` })
+		print(" START ")
+		print(`{_G.World}_G.Chapter{_G.Chapter}`)
+	else
+		Replicated_PlayRoom["Event"]:FireServer("Create")
+	end
+
+	-- PlayRoom["Event"]:FireServer("Create")
+	-- PlayRoom["Event"]:FireServer("Change-Chapter", { ["Chapter"] = "OnePiece_Chapter1" })
+
+
+
+else
+	if Game_Data.GameRunning.Value then
+		if not PlayerData.Data.AutoPlay.Value then
+			Units["AutoPlay"]:FireServer()
+		end
+	else
+		if _G.EndGameMethod == "Next" then
+			Voting["VoteNext"]:FireServer()
+		end
+	end
+end
+
+
+
+-- if not game:IsLoaded() then
+-- 	game.Loaded:Wait()
+-- end
+
+
+-- local Service = setmetatable({}, {
+-- 	__index = function(self, key)
+-- 		return (cloneref or function(service) return service end)(game.GetService(game, key))
+-- 	end
+-- })
+
+-- local Workspace = Service.Workspace
+-- local Players = Service.Players
+-- local ReplicatedStorage = Service.ReplicatedStorage
+-- local HttpService = Service.HttpService
+-- local TeleportService = Service.TeleportService
+-- local RunService = Service.RunService
+-- local Lighting = Service.Lighting
+
+-- local LocalPlayer = Players.LocalPlayer
+-- local Character = LocalPlayer.Character or LocalPlayer.CharacterAdded:Wait()
+-- local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
+-- local Humanoid = Character:WaitForChild("Humanoid")
+
+
+-- local Gold = LocalPlayer.PlayerGui.HUD.MenuFrame.LeftSide.Frame.Gold.Numbers
+-- local LevelYenMax = LocalPlayer.PlayerGui.PlayerStats.Main.YenMax.Frame.Level
+-- local LevelYenGenarate = LocalPlayer.PlayerGui.PlayerStats.Main.YenGenarate.Frame.Level
+-- local LevelBaseHealth = LocalPlayer.PlayerGui.PlayerStats.Main.BaseHealth.Frame.Level
+-- local PlayerStats = ReplicatedStorage:WaitForChild("Remote"):WaitForChild("Server"):WaitForChild("Gameplay"):WaitForChild("PlayerStats")
+
+-- if tonumber(string.match(LevelYenMax.Text, "%d+")) == 0 or tonumber(string.match(LevelYenGenarate.Text, "%d+")) == 0 or tonumber(string.match(LevelBaseHealth.Text, "%d+")) == 0 then
+--     game:GetService("GuiService").SelectedCoreObject = game:GetService("Players").LocalPlayer.PlayerGui.HUD.MenuFrame.LeftSide.Frame.PlayerStats
+--     task.wait(0.1)
+--     game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+--     task.wait()
+--     game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+--     task.wait(0.1)
+--     game:GetService("GuiService").SelectedCoreObject = nil
+--     task.wait(0.1)
+--     game:GetService("GuiService").SelectedCoreObject = game:GetService("Players").LocalPlayer.PlayerGui.HUD.MenuFrame.LeftSide.Frame.PlayerStats
+--     task.wait(0.1)
+--     game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+--     task.wait()
+--     game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+--     task.wait(0.1)
+--     game:GetService("GuiService").SelectedCoreObject = nil
+-- end
+
+
+-- local Code = {}
+
+-- for ul in string.gmatch(game:HttpGet("https://beebom.com/anime-rangers-x-codes/"), "<ul[^>]*>(.-)</ul>") do
+--     for li in string.gmatch(ul, "<li>(.-)</li>") do
+--         for v in string.gmatch(li, "<strong>([^<]+)</strong>") do
+--             table.insert(Code, v)
+--         end
+--     end
+-- end
+
+
+-- local ProjectName = "Anime Rangers X"
+-- local filename = "RIPPER Hub/SaveSettings/" .. ProjectName.."/".."Settings"..".json"
+-- getgenv().SaveSettings = getgenv().SaveSettings or {}
+-- local Collection = {}
+
+-- function Collection:Load()
+-- 	if readfile and writefile and isfile and isfolder then
+-- 		if not isfolder("RIPPER Hub") then
+-- 			makefolder("RIPPER Hub")
+-- 		end
+-- 		if not isfolder("RIPPER Hub/SaveSettings") then
+-- 			makefolder("RIPPER Hub/SaveSettings")
+-- 		end
+-- 		if not isfolder("RIPPER Hub/SaveSettings/" .. ProjectName) then
+-- 			makefolder("RIPPER Hub/SaveSettings/" .. ProjectName)
+-- 		end
+-- 		if not isfile(filename) then
+-- 			writefile(filename, HttpService:JSONEncode(getgenv().SaveSettings))
+-- 		else
+-- 			print("Settings has been loaded.")
+-- 			local fileContent = readfile(filename)
+
+-- 			local success, Decode = pcall(function()
+-- 				return HttpService:JSONDecode(fileContent)
+-- 			end)
+
+-- 			if not success then
+-- 				warn("Failed to parse JSON. Check the content of the file:", filename)
+-- 				return false
+-- 			end
+
+-- 			for i, v in pairs(Decode) do
+-- 				getgenv().SaveSettings[i] = v
+-- 			end
+-- 			for i,v in pairs(getgenv().SaveSettings) do 
+-- 				getgenv().SaveSettings[i] = v
+-- 			end 
+-- 		end
+-- 	else
+-- 		warn("Failed to load script")
+-- 		return false
+-- 	end
+-- end
+
+-- function Collection:Save()
+-- 	if readfile and writefile and isfile then
+-- 		if not isfile(filename) then
+-- 			Collection:Load()
+-- 		else
+-- 			local fileContent = readfile(filename)
+
+-- 			local success, Decode = pcall(function()
+-- 				return HttpService:JSONDecode(fileContent)
+-- 			end)
+
+-- 			if not success then
+-- 				warn("Failed to parse JSON while saving. Check the content of the file:", filename)
+-- 				return false 
+-- 			end
+
+-- 			local Array = {}
+-- 			for i, v in pairs(getgenv().SaveSettings) do
+-- 				Array[i] = v
+-- 			end
+-- 			writefile(filename, HttpService:JSONEncode(Array))
+-- 		end
+-- 	else
+-- 		warn("Failed to save")
+-- 		return false
+-- 	end
+-- end
+
+-- function Collection:AddToggle(Path,Title,Default,Desc)
+-- 	local valueX
+-- 	if _G.Configs and _G.Configs[Title] then 
+-- 		valueX = _G.Configs[Title]
+-- 		getgenv().SaveSettings[Title] = _G.Configs[Title]
+-- 	else 
+-- 		if getgenv().SaveSettings[Title] then 
+-- 			valueX = getgenv().SaveSettings[Title]
+-- 		else 
+-- 			valueX = Default
+-- 		end 
+
+-- 	end 
+
+-- 	local Toggles_
+
+-- 	local function Callback(value)
+-- 		if Title == "Automatic Summon" then
+-- 			getgenv().AutomaticSummon = value
+-- 		end
+-- 		if Title == "Automatic Up Stats MaxYen" then
+-- 			getgenv().AutoUpMaxYen = value
+-- 		end
+-- 		if Title == "Automatic Up Stats YenGeneration" then
+-- 			getgenv().AutoUpYenGeneration = value
+-- 		end
+-- 		if Title == "Automatic Up Stats TowerHealth" then
+-- 			getgenv().AutoUpTowerHealth = value
+-- 		end
+-- 		if Title == "White Screen" then
+-- 			if value then
+-- 				RunService:Set3dRenderingEnabled(false)
+-- 			else
+-- 				RunService:Set3dRenderingEnabled(true)
+-- 			end
+-- 		end
+-- 		if Title == "Black Screen" then
+-- 			if value then
+-- 				if not game.CoreGui:FindFirstChild("Mercury BlackScreen") then
+-- 					local MercuryBs = Instance.new("ScreenGui")
+-- 					MercuryBs.Enabled = true
+-- 					MercuryBs.Name = "Mercury BlackScreen"
+-- 					MercuryBs.IgnoreGuiInset = true
+-- 					MercuryBs.Parent = game.CoreGui	
+-- 					local frame = Instance.new("Frame")
+-- 					frame.Size = UDim2.new(1, 0, 1, 0)
+-- 					frame.Name = "Mercury Frame"
+-- 					frame.Position = UDim2.new(0, 0, 0, 0)
+-- 					frame.BackgroundColor3 = Color3.new(0, 0, 0)
+-- 					frame.BorderSizePixel = 0
+-- 					frame.Parent = MercuryBs
+-- 				end
+-- 			else
+-- 				if game.CoreGui:FindFirstChild("Mercury BlackScreen") then
+-- 					game.CoreGui:FindFirstChild("Mercury BlackScreen"):Destroy()
+-- 				end
+-- 			end
+-- 		end
+-- 		if Title == "Automatic lock Fps"then
+-- 			getgenv().AutoUnlockFps = value
+-- 			if value then
+-- 				task.spawn(function()
+-- 					if getgenv().AutoUnlockFps then
+-- 						repeat
+-- 							wait(1)
+-- 							setfpscap(getgenv().SetFPSCap)
+-- 						until not getgenv().AutoUnlockFps
+-- 						setfpscap(60)
+-- 					end
+-- 				end)
+-- 			end
+-- 		end
+
+-- 		getgenv().SaveSettings[Title] = value
+-- 		Collection:Save()
+-- 	end
+-- 	if not Desc then
+-- 		Toggles_ = Path:Toggle(
+-- 			{
+-- 				Title = Title,
+-- 				Value = valueX,
+-- 				Callback = Callback
+-- 			}
+-- 		)
+-- 	else
+-- 		Toggles_ = Path:Toggle(
+-- 			{
+-- 				Title = Title,
+-- 				Value = valueX,
+-- 				Desc = Desc,
+-- 				Callback = Callback
+-- 			}
+-- 		)
+-- 	end	
+
+-- 	return Toggles_
+-- end
+
+-- function Collection:AddDropdown(Path,Title,Values,Default,Multi,Desc)
+-- 	if _G.Configs and _G.Configs[Title] then
+-- 		getgenv().SaveSettings[Title] = _G.Configs[Title]
+-- 	else 
+-- 		if not getgenv().SaveSettings[Title] then 
+-- 			getgenv().SaveSettings[Title] = Default
+-- 			Collection:Save()
+-- 		end 
+-- 	end 
+
+-- 	local function Callback(option)
+-- 		if Title == "Select Summon Method" then
+-- 			getgenv().SelectMethodSpinUnit = option
+-- 		end
+
+-- 		getgenv().SaveSettings[Title] = option
+-- 		Collection:Save()
+-- 	end
+
+-- 	local Dropdown_
+
+-- 	if not Desc then
+-- 		Dropdown_ = Path:Dropdown(
+-- 			{
+-- 				Title = Title,
+-- 				Values = Values,
+-- 				Value = _G.Configs and _G.Configs[Title] or getgenv().SaveSettings[Title] or Default,
+-- 				Multi = Multi,
+-- 				Callback = Callback
+-- 			}
+-- 		)
+-- 	else
+-- 		Dropdown_ = Path:Dropdown(
+-- 			{
+-- 				Title = Title,
+-- 				Values = Values,
+-- 				Value = _G.Configs and _G.Configs[Title] or getgenv().SaveSettings[Title] or Default,
+-- 				Multi = Multi,
+-- 				Callback = Callback
+-- 			}
+-- 		)
+-- 	end
+
+
+-- 	Callback(getgenv().SaveSettings[Title])
+-- 	Collection:Save()
+-- 	--Dropdown:Refresh(Value) -- {"Options 1","Options 2"}
+-- 	return Dropdown_
+-- end
+
+-- function Collection:AddInput(Path,Title,Default,Placeholder,Desc)
+-- 	if _G.Configs and _G.Configs[Title] then
+-- 		getgenv().SaveSettings[Title] = _G.Configs[Title]
+-- 	else 
+-- 		if not getgenv().SaveSettings[Title] then 
+-- 			getgenv().SaveSettings[Title] = Default
+-- 			Collection:Save()
+-- 		end 
+-- 	end
+
+-- 	local function Callback(input)
+
+-- 		if Title == "JobId" then
+-- 			getgenv().EnterJobId = input
+-- 		end
+
+-- 		getgenv().SaveSettings[Title] = input
+-- 		Collection:Save() 
+-- 	end
+
+-- 	local Input
+
+-- 	if not Desc then
+-- 		Input = Path:Input(
+-- 			{
+-- 				Title = Title,
+-- 				Value = _G.Configs and _G.Configs[Title] or getgenv().SaveSettings[Title] or Default,
+-- 				PlaceholderText = Placeholder,
+-- 				Callback = Callback
+-- 			}
+-- 		)
+-- 	else
+-- 		Input = Path:Input(
+-- 			{
+-- 				Title = Title,
+-- 				Value = _G.Configs and _G.Configs[Title] or getgenv().SaveSettings[Title] or Default,
+-- 				PlaceholderText = Placeholder,
+-- 				Desc = Desc,
+-- 				Callback = Callback
+-- 			}
+-- 		)
+-- 	end
+
+-- 	Callback(getgenv().SaveSettings[Title])
+-- 	Collection:Save()
+-- 	return Input
+-- end
+
+-- function Collection:AddSlider(Path,Title,Min,Max,Default,Desc)
+-- 	if _G.Configs and _G.Configs[Title] then
+-- 		getgenv().SaveSettings[Title] = _G.Configs[Title]
+-- 	else 
+-- 		if not getgenv().SaveSettings[Title] then 
+-- 			getgenv().SaveSettings[Title] = Default
+-- 			Collection:Save()
+-- 		end 
+-- 	end 
+
+-- 	local function Callback(value)
+-- 		if Title == "Fps Cap" then
+-- 			getgenv().SetFPSCap = tonumber(value)
+-- 		end
+
+-- 		getgenv().SaveSettings[Title] = value
+-- 		Collection:Save()  
+-- 	end
+
+-- 	local Input
+
+-- 	if not Desc then
+-- 		Input = Path:Slider({
+-- 			Title = Title,
+-- 			Value = {
+-- 				Min = Min,
+-- 				Max = Max,
+-- 				Default = _G.Configs and _G.Configs[Title] or getgenv().SaveSettings[Title] or Default,
+-- 			},
+-- 			Callback = Callback
+-- 		})
+-- 	else
+-- 		Input = Path:Slider({
+-- 			Title = Title,
+-- 			Desc = Desc,
+-- 			Value = {
+-- 				Min = Min,
+-- 				Max = Max,
+-- 				Default = _G.Configs and _G.Configs[Title] or getgenv().SaveSettings[Title] or Default,
+-- 			},
+-- 			Callback = Callback
+-- 		})
+-- 	end
+
+-- 	Callback(getgenv().SaveSettings[Title])
+-- 	Collection:Save()
+-- 	return Input
+-- end
+
+-- Collection:Load()
+
+-- local WindUI  = loadstring(game:HttpGet("https://raw.githubusercontent.com/imyourlio/WindUI/refs/heads/main/WindLoader.lua"))()
+
+-- local Window = WindUI:CreateWindow({
+-- 	Title = "RIPPER Hub",
+-- 	Icon = "",
+-- 	Author = "By TwinO & Godx",
+-- 	Folder = ProjectName,
+-- 	Size = UDim2.fromOffset(527, 418),
+-- 	Transparent = true,
+-- 	Theme = "Dark",
+-- 	SideBarWidth = 180,
+-- 	HasOutline = false,
+-- })
+
+-- local Tabs = {
+-- 	Lobby = Window:Tab({ Title = "Lobby", Icon = "door-open", Desc = "" }),
+--     AutoJoin = Window:Tab({ Title = "Auto Join", Icon = "component", Desc = "" }),
+-- 	AutoPlayGame = Window:Tab({ Title = "Automatically", Icon = "list-video", Desc = "" }),
+-- 	PlayerStats = Window:Tab({ Title = "PlayerStats", Icon = "user-cog", Desc = "" }),
+-- 	Miscellaneous = Window:Tab({ Title = "Miscellaneous", Icon = "list", Desc = "" }),
+-- 	Lind = Window:Divider(),
+-- 	WindowTab = Window:Tab({ Title = "Window and File Configuration", Icon = "settings", Desc = "" }),
+-- 	CreateThemeTab = Window:Tab({ Title = "Create Theme", Icon = "palette", Desc = "" }),
+-- }
+-- ----------------------------------------//Lobby//----------------------------------------
+-- Tabs.Lobby:Section({ Title = "Claim Rewards" })
+
+-- Tabs.Lobby:Button({Title = "Claim All Code", Desc = "Click claim all code for get Rewards", Callback = function()
+--     for i, v in pairs(Code) do
+--         game:GetService("ReplicatedStorage").Remote.Server.Lobby.Code:FireServer(v)
+--     end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Claim All Quest", Desc = "Click claim all quest for get Rewards", Callback = function()
+--     ReplicatedStorage.Remote.Server.Gameplay.QuestEvent:FireServer("ClaimAll")
+-- end})
+
+-- Tabs.Lobby:Section({ Title = "Summon" })
+
+-- Tabs.Lobby:Button({Title = "Check Summon Banners", Desc = "Click for check banner", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.UnitsGacha.Enabled then
+-- 		LocalPlayer.PlayerGui.UnitsGacha.Enabled = true
+-- 		LocalPlayer.PlayerGui.UnitsGacha.Main.Visible = true
+-- 	elseif LocalPlayer.PlayerGui.UnitsGacha.Enabled then
+-- 		LocalPlayer.PlayerGui.UnitsGacha.Enabled = false
+-- 		LocalPlayer.PlayerGui.UnitsGacha.Main.Visible = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Summon x1", Desc = "Click to random 1 time", Callback = function()
+-- 	ReplicatedStorage.Remote.Server.Gambling.UnitsGacha:FireServer("x1", "Standard", {})
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Summon x10", Desc = "Click to random 10 time", Callback = function()
+-- 	ReplicatedStorage.Remote.Server.Gambling.UnitsGacha:FireServer("x10", "Standard", {})
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Shiny Normalize", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.ShinyNormalize.Enabled then
+-- 		LocalPlayer.PlayerGui.ShinyNormalize.Enabled = true
+-- 	elseif LocalPlayer.PlayerGui.ShinyNormalize.Enabled then
+-- 		LocalPlayer.PlayerGui.ShinyNormalize.Enabled = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Claim All Unite Index", Callback = function()
+-- 	ReplicatedStorage.Remote.Server.UnitsIndex.RemoteEvent:FireServer("ClaimAll")
+-- end})
+
+-- Tabs.Lobby:Section({ Title = "Trait" })
+
+-- Tabs.Lobby:Button({Title = "Trait Reroll", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.Traits.Enabled then
+-- 		LocalPlayer.PlayerGui.Traits.Enabled = true
+-- 		LocalPlayer.PlayerGui.Traits.Main.Visible = true
+-- 	elseif LocalPlayer.PlayerGui.Traits.Enabled then
+-- 		LocalPlayer.PlayerGui.Traits.Enabled = false
+-- 		LocalPlayer.PlayerGui.Traits.Main.Visible = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Apply Curse", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.ApplyCurse.Enabled then
+-- 		LocalPlayer.PlayerGui.ApplyCurse.Enabled = true
+-- 	elseif LocalPlayer.PlayerGui.ApplyCurse.Enabled then
+-- 		LocalPlayer.PlayerGui.ApplyCurse.Enabled = false
+
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Stats Potential", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.StatsPotential.Enabled then
+-- 		LocalPlayer.PlayerGui.StatsPotential.Enabled = true
+-- 	elseif LocalPlayer.PlayerGui.StatsPotential.Enabled then
+-- 		LocalPlayer.PlayerGui.StatsPotential.Enabled = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Section({ Title = "Evolve" })
+
+-- Tabs.Lobby:Button({Title = "Unite Evolve", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.UnitsEvolve.Enabled then
+-- 		LocalPlayer.PlayerGui.UnitsEvolve.Enabled = true
+-- 		LocalPlayer.PlayerGui.UnitsEvolve.Main.Visible = true
+-- 	elseif LocalPlayer.PlayerGui.UnitsEvolve.Enabled then
+-- 		LocalPlayer.PlayerGui.UnitsEvolve.Enabled = false
+-- 		LocalPlayer.PlayerGui.UnitsEvolve.Main.Visible = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Evolve Tier", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.EvolveTier.Enabled then
+-- 		LocalPlayer.PlayerGui.EvolveTier.Enabled = true
+-- 	elseif LocalPlayer.PlayerGui.EvolveTier.Enabled then
+-- 		LocalPlayer.PlayerGui.EvolveTier.Enabled = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Button({Title = "Crafting", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.Crafting.Enabled then
+-- 		LocalPlayer.PlayerGui.Crafting.Enabled = true
+-- 	elseif LocalPlayer.PlayerGui.Crafting.Enabled then
+-- 		LocalPlayer.PlayerGui.Crafting.Enabled = false
+-- 	end
+-- end})
+
+-- Tabs.Lobby:Section({ Title = "Merchant Shop" })
+
+-- Tabs.Lobby:Button({Title = "Shop", Callback = function()
+-- 	if not LocalPlayer.PlayerGui.Merchant.Enabled then
+-- 		LocalPlayer.PlayerGui.Merchant.Enabled = true
+-- 		LocalPlayer.PlayerGui.Merchant.Main.Visible = true
+-- 	elseif LocalPlayer.PlayerGui.Merchant.Enabled then
+-- 		LocalPlayer.PlayerGui.Merchant.Enabled = false
+-- 		LocalPlayer.PlayerGui.Merchant.Main.Visible = false
+-- 	end
+-- end})
+
+-- ----------------------------------------//Auto Join Game//----------------------------------------
+
+-- ----------------------------------------//Auto Play Game//----------------------------------------
+-- Tabs.AutoPlayGame:Section({ Title = "Auto Play" })
+
+-- Tabs.AutoPlayGame:Toggle({Title = "Auto Vote",Icon = "circle-play", Default = false, Callback = function(state) 
+--     getgenv().AutoVote = state
+-- end})
+
+-- Tabs.AutoPlayGame:Toggle({Title = "Auto Play",Icon = "circle-play", Default = false, Callback = function(state) 
+--     getgenv().AutoPlay = state
+-- end})
+
+-- Tabs.AutoPlayGame:Toggle({Title = "Auto Upgrade",Icon = "circle-play", Default = false, Callback = function(state) 
+--     getgenv().AutoUpgrade = state
+-- end})
+
+-- Tabs.AutoPlayGame:Section({ Title = "End Game" })
+
+-- Tabs.AutoPlayGame:Toggle({Title = "Auto Retry",Icon = "circle-play", Default = false, Callback = function(state) 
+--     getgenv().AutoRetry = state
+-- end})
+
+-- Tabs.AutoPlayGame:Toggle({Title = "Auto Next",Icon = "circle-play", Default = false, Callback = function(state) 
+--     getgenv().AutoNext = state
+-- end})
+
+-- Tabs.AutoPlayGame:Toggle({Title = "Auto Leave",Icon = "circle-play", Default = false, Callback = function(state) 
+--     getgenv().AutoLeave = state
+-- end})
+
+-- ----------------------------------------//Player stats//----------------------------------------
+-- Tabs.PlayerStats:Section({ Title = "Stats" })
+
+-- MaxYen = Tabs.PlayerStats:Paragraph({Title = "MaxYen Level: Loading.."})
+-- YenGeneration = Tabs.PlayerStats:Paragraph({Title = "YenGeneration Level: Loading.."})
+-- TowerHealth = Tabs.PlayerStats:Paragraph({Title = "TowerHealth Level: Loading.."})
+
+-- Tabs.PlayerStats:Section({ Title = "AutoUpStats" })
+
+-- Collection:AddToggle(Tabs.PlayerStats,"Automatic Up Stats MaxYen",false)
+-- Collection:AddToggle(Tabs.PlayerStats, "Automatic Up Stats YenGeneration",false)
+-- Collection:AddToggle(Tabs.PlayerStats, "Automatic Up Stats TowerHealth",false)
+
+-- Tabs.Miscellaneous:Section({ Title = "Performance" })
+
+-- Collection:AddToggle(Tabs.Miscellaneous,"White Screen",false)
+-- Collection:AddToggle(Tabs.Miscellaneous, "Black Screen",false)
+-- Collection:AddToggle(Tabs.Miscellaneous, "Automatic lock Fps",false)
+-- Collection:AddSlider(Tabs.Miscellaneous,"Fps Cap",1,1000,144)
+
+-- Tabs.Miscellaneous:Button({Title = "Boost Fps",Callback = function()
+-- 	local Terrain = Workspace:FindFirstChildOfClass("Terrain")
+
+-- 	if Terrain then
+-- 		Terrain.WaterWaveSize = 0
+-- 		Terrain.WaterWaveSpeed = 0
+-- 		Terrain.WaterReflectance = 0
+-- 		Terrain.WaterTransparency = 0
+-- 	end
+
+-- 	Lighting.GlobalShadows = false
+-- 	Lighting.FogEnd = math.huge
+-- 	settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+
+-- 	for _, obj in pairs(game:GetDescendants()) do
+-- 		if obj:IsA("Part") or obj:IsA("UnionOperation") or obj:IsA("MeshPart")
+-- 			or obj:IsA("CornerWedgePart") or obj:IsA("TrussPart") then
+-- 			obj.Material = Enum.Material.Plastic
+-- 			obj.Reflectance = 0
+-- 		elseif obj:IsA("Decal") then
+-- 			obj.Transparency = 1
+-- 		elseif obj:IsA("ParticleEmitter") or obj:IsA("Trail") then
+-- 			obj.Lifetime = NumberRange.new(0)
+-- 		elseif obj:IsA("Explosion") then
+-- 			obj.BlastPressure = 1
+-- 			obj.BlastRadius = 1
+-- 		elseif obj:IsA("Texture") then
+-- 			obj.Texture = ""
+-- 		elseif obj:IsA("Sky") then
+-- 			obj.Parent = nil
+-- 		end
+-- 	end
+-- 	for _, effect in pairs(Lighting:GetDescendants()) do
+-- 		if effect:IsA("BlurEffect") or effect:IsA("SunRaysEffect") or effect:IsA("ColorCorrectionEffect") or effect:IsA("BloomEffect") or effect:IsA("DepthOfFieldEffect") then
+-- 			effect.Enabled = false
+-- 		end
+-- 	end
+-- 	Workspace.DescendantAdded:Connect(function(child)
+-- 		task.spawn(function()
+-- 			if child:IsA("ForceField") or child:IsA("Sparkles") or child:IsA("Smoke") or child:IsA("Fire") then
+-- 				RunService.Heartbeat:Wait()
+-- 				child:Destroy()
+-- 			end
+-- 		end)
+-- 	end)
+-- end})
+
+-- Tabs.Miscellaneous:Section({ Title = "Miscellaneous" })
+
+-- Tabs.Miscellaneous:Button({Title = "Reset Settings",Callback = function()
+-- 	if isfile(filename) then delfile(filename) end
+-- end})
+
+-- Tabs.Miscellaneous:Section({ Title = "Server" })
+
+-- Collection:AddInput(Tabs.Miscellaneous,"JobId","","Enter JobId")
+
+-- Tabs.Miscellaneous:Button({Title = "Join JobId",Callback = function()
+-- 	TeleportService:TeleportToPlaceInstance(game.PlaceId, getgenv().EnterJobId or "",LocalPlayer)
+-- end})
+
+-- Tabs.Miscellaneous:Button({Title = "Copy JobId",Callback = function()
+-- 	if setclipboard then setclipboard(game.JobId) end
+-- end})
+
+-- Tabs.Miscellaneous:Button({Title = "Rejoin server",Callback = function()
+-- 	if #Players:GetPlayers() <= 1 then
+-- 		LocalPlayer:Kick("\nRejoining...")
+-- 		wait()
+-- 		TeleportService:Teleport(game.PlaceId, LocalPlayer)
+-- 	else
+-- 		TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId,LocalPlayer)
+-- 	end
+-- end})
+
+-- Tabs.Miscellaneous:Button({Title = "Server hop",Callback = function()
+-- 	local AllIDs = {}
+-- 	local actualHour = os.date("!*t").hour
+-- 	local nextCursor = ""
+
+-- 	local function loadVisitedServers()
+-- 		if isfile("Visited.txt") then
+-- 			local success, data = pcall(function()
+-- 				return HttpService:JSONDecode(readfile("Visited.txt"))
+-- 			end)
+-- 			if success then
+-- 				AllIDs = data
+-- 				if AllIDs.hour ~= actualHour then
+-- 					AllIDs = { hour = actualHour, ids = {} }
+-- 				end
+-- 			end
+-- 		else
+-- 			AllIDs = { hour = actualHour, ids = {} }
+-- 			writefile("Visited.txt", HttpService:JSONEncode(AllIDs))
+-- 		end
+-- 	end
+
+-- 	local function saveVisitedServers()
+-- 		writefile("Visited.txt", HttpService:JSONEncode(AllIDs))
+-- 	end
+
+-- 	local function fetchServers(cursor)
+-- 		local url = "https://games.roblox.com/v1/games/" .. PlaceId .. "/servers/Public?sortOrder=Asc&limit=100"
+-- 		if cursor and cursor ~= "" then
+-- 			url = url .. "&cursor=" .. cursor
+-- 		end
+-- 		local success, result = pcall(function()
+-- 			return HttpService:JSONDecode(game:HttpGet(url))
+-- 		end)
+-- 		if success and result and result.data then
+-- 			nextCursor = result.nextPageCursor or ""
+-- 			return result.data
+-- 		end
+-- 		return {}
+-- 	end
+
+-- 	local function attemptJoin()
+-- 		for _, server in ipairs(fetchServers(nextCursor)) do
+-- 			if server.id and server.playing < server.maxPlayers then
+-- 				if not table.find(AllIDs.ids, server.id) then
+-- 					table.insert(AllIDs.ids, server.id)
+-- 					saveVisitedServers()
+-- 					TeleportService:TeleportToPlaceInstance(PlaceId, server.id, LocalPlayer)
+-- 					wait(4)
+-- 				end
+-- 			end
+-- 		end
+-- 	end
+
+-- 	local function teleportToNewServer()
+-- 		loadVisitedServers()
+-- 		while true do
+-- 			attemptJoin()
+-- 			if nextCursor == "" then
+-- 				break
+-- 			end
+-- 		end
+-- 	end
+
+-- 	teleportToNewServer()
+-- end})
+
+
+-- local folderPath = ProjectName
+-- makefolder(folderPath)
+
+-- local function SaveFile(fileName, data)
+-- 	local filePath = folderPath .. "/" .. fileName .. ".json"
+-- 	local jsonData = HttpService:JSONEncode(data)
+-- 	writefile(filePath, jsonData)
+-- end
+
+-- local function LoadFile(fileName)
+-- 	local filePath = folderPath .. "/" .. fileName .. ".json"
+-- 	if isfile(filePath) then
+-- 		local jsonData = readfile(filePath)
+-- 		return HttpService:JSONDecode(jsonData)
+-- 	end
+-- end
+
+-- local function ListFiles()
+-- 	local files = {}
+-- 	for _, file in ipairs(listfiles(folderPath)) do
+-- 		local fileName = file:match("([^/]+)%.json$")
+-- 		if fileName then
+-- 			table.insert(files, fileName)
+-- 		end
+-- 	end
+-- 	return files
+-- end
+
+-- Tabs.WindowTab:Section({ Title = "Window" })
+
+-- local themeValues = {}
+-- for name, _ in pairs(WindUI:GetThemes()) do
+-- 	table.insert(themeValues, name)
+-- end
+
+-- local themeDropdown = Tabs.WindowTab:Dropdown({
+-- 	Title = "Select Theme",
+-- 	Multi = false,
+-- 	AllowNone = false,
+-- 	Value = nil,
+-- 	Values = themeValues,
+-- 	Callback = function(theme)
+-- 		WindUI:SetTheme(theme)
+-- 	end
+-- })
+-- themeDropdown:Select(WindUI:GetCurrentTheme())
+
+-- local ToggleTransparency = Tabs.WindowTab:Toggle({
+-- 	Title = "Toggle Window Transparency",
+-- 	Callback = function(e)
+-- 		Window:ToggleTransparency(e)
+-- 	end,
+-- 	Value = WindUI:GetTransparency()
+-- })
+
+-- Tabs.WindowTab:Section({ Title = "Save" })
+
+-- local fileNameInput = ""
+-- Tabs.WindowTab:Input({
+-- 	Title = "Write File Name",
+-- 	PlaceholderText = "Enter file name",
+-- 	Callback = function(text)
+-- 		fileNameInput = text
+-- 	end
+-- })
+
+-- Tabs.WindowTab:Button({
+-- 	Title = "Save File",
+-- 	Callback = function()
+-- 		if fileNameInput ~= "" then
+-- 			SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
+-- 		end
+-- 	end
+-- })
+
+-- Tabs.WindowTab:Section({ Title = "Load" })
+
+-- local filesDropdown
+-- local files = ListFiles()
+
+-- filesDropdown = Tabs.WindowTab:Dropdown({
+-- 	Title = "Select File",
+-- 	Multi = false,
+-- 	AllowNone = true,
+-- 	Values = files,
+-- 	Callback = function(selectedFile)
+-- 		fileNameInput = selectedFile
+-- 	end
+-- })
+
+-- Tabs.WindowTab:Button({
+-- 	Title = "Load File",
+-- 	Callback = function()
+-- 		if fileNameInput ~= "" then
+-- 			local data = LoadFile(fileNameInput)
+-- 			if data then
+-- 				WindUI:Notify({
+-- 					Title = "File Loaded",
+-- 					Content = "Loaded data: " .. HttpService:JSONEncode(data),
+-- 					Duration = 5,
+-- 				})
+-- 				if data.Transparent then 
+-- 					Window:ToggleTransparency(data.Transparent)
+-- 					ToggleTransparency:SetValue(data.Transparent)
+-- 				end
+-- 				if data.Theme then WindUI:SetTheme(data.Theme) end
+-- 			end
+-- 		end
+-- 	end
+-- })
+
+-- Tabs.WindowTab:Button({
+-- 	Title = "Overwrite File",
+-- 	Callback = function()
+-- 		if fileNameInput ~= "" then
+-- 			SaveFile(fileNameInput, { Transparent = WindUI:GetTransparency(), Theme = WindUI:GetCurrentTheme() })
+-- 		end
+-- 	end
+-- })
+
+-- Tabs.WindowTab:Button({
+-- 	Title = "Refresh List",
+-- 	Callback = function()
+-- 		filesDropdown:Refresh(ListFiles())
+-- 	end
+-- })
+
+-- local currentThemeName = WindUI:GetCurrentTheme()
+-- local themes = WindUI:GetThemes()
+
+-- local ThemeAccent = themes[currentThemeName].Accent
+-- local ThemeOutline = themes[currentThemeName].Outline
+-- local ThemeText = themes[currentThemeName].Text
+-- local ThemePlaceholderText = themes[currentThemeName].PlaceholderText
+
+-- local function updateTheme()
+-- 	WindUI:AddTheme({
+-- 		Name = currentThemeName,
+-- 		Accent = ThemeAccent,
+-- 		Outline = ThemeOutline,
+-- 		Text = ThemeText,
+-- 		PlaceholderText = ThemePlaceholderText
+-- 	})
+-- 	WindUI:SetTheme(currentThemeName)
+-- end
+
+-- Tabs.CreateThemeTab:Input({
+-- 	Title = "Theme Name",
+-- 	Value = currentThemeName,
+-- 	Callback = function(name)
+-- 		currentThemeName = name
+-- 	end
+-- })
+
+-- Tabs.CreateThemeTab:Colorpicker({
+-- 	Title = "Background Color",
+-- 	Default = Color3.fromHex(ThemeAccent),
+-- 	Callback = function(color)
+-- 		ThemeAccent = color:ToHex()
+-- 	end
+-- })
+
+-- Tabs.CreateThemeTab:Colorpicker({
+-- 	Title = "Outline Color",
+-- 	Default = Color3.fromHex(ThemeOutline),
+-- 	Callback = function(color)
+-- 		ThemeOutline = color:ToHex()
+-- 	end
+-- })
+
+-- Tabs.CreateThemeTab:Colorpicker({
+-- 	Title = "Text Color",
+-- 	Default = Color3.fromHex(ThemeText),
+-- 	Callback = function(color)
+-- 		ThemeText = color:ToHex()
+-- 	end
+-- })
+
+-- Tabs.CreateThemeTab:Colorpicker({
+-- 	Title = "Placeholder Text Color",
+-- 	Default = Color3.fromHex(ThemePlaceholderText),
+-- 	Callback = function(color)
+-- 		ThemePlaceholderText = color:ToHex()
+-- 	end
+-- })
+
+-- Tabs.CreateThemeTab:Button({
+-- 	Title = "Update Theme",
+-- 	Callback = function()
+-- 		updateTheme()
+-- 	end
+-- })
+
+-- do
+-- 	MaxYen:SetTitle("Maximum Yen Level: "..string.match(LevelYenMax.Text, "%d+"))
+-- 	YenGeneration:SetTitle("Yen Generation Level: "..string.match(LevelYenGenarate.Text, "%d+"))
+-- 	TowerHealth:SetTitle("Tower Health Level: ".. string.match(LevelBaseHealth.Text, "%d+"))
+-- end
+
+-- task.spawn(function() -- Auto Voting
+--     while task.wait() do
+--         pcall(function()
+--             if not getgenv().AutoVote then task.wait(0.1) end
+--             if getgenv().AutoVote then
+--                 if LocalPlayer.PlayerGui.HUD.InGame.VotePlaying.Visible then
+--                     ReplicatedStorage.Remote.Server.OnGame.Voting.VotePlaying:FireServer()
+--                     task.wait(1)
+--                 end
+--             end
+--         end)
+--     end
+-- end)
+
+-- task.spawn(function() -- Auto Play
+--     while task.wait() do
+--         pcall(function()
+--             if not getgenv().AutoPlay then task.wait(0.1) end
+--             if getgenv().AutoPlay then
+--                 if not ReplicatedStorage.Player_Data[LocalPlayer.Name].Data.AutoPlay.Value then
+--                     ReplicatedStorage.Remote.Server.Units.AutoPlay:FireServer()
+--                     task.wait(0.27)
+--                 end
+--             end
+--         end)
+--     end
+-- end)
+
+-- task.spawn(function() -- Auto Retry
+--     while task.wait() do
+--         pcall(function()
+--             if not getgenv().AutoRetry then task.wait(0.1) end
+--             if getgenv().AutoRetry then
+--                 if ReplicatedStorage.Values.Game.VoteRetry.VoteEnabled.Value and LocalPlayer.PlayerGui.RewardsUI.Main.Visible and LocalPlayer.PlayerGui.RewardsUI.Main.LeftSide.Button.Retry.Visible then
+--                     ReplicatedStorage.Remote.Server.OnGame.Voting.VoteRetry:FireServer()
+--                     task.wait(1)
+--                 else
+--                     if not ReplicatedStorage.Values.Game.VoteNext.VoteEnabled and LocalPlayer.PlayerGui.RewardsUI.Enabled then
+--                         LocalPlayer.PlayerGui.RewardsUI.Enabled = false
+--                         if game.Players.LocalPlayer.PlayerGui.RewardsUI.Main.Visible then
+--                             game.Players.LocalPlayer.PlayerGui.RewardsUI.Main.Visible = false
+--                         end
+--                     end
+--                 end
+--             end
+--         end)
+--     end
+-- end)
+
+-- task.spawn(function() -- Auto Upgrade
+--     while task.wait(0.1) do
+--         pcall(function()
+--             if getgenv().AutoUpgrade then
+-- 				for _,v in pairs(LocalPlayer.UnitsFolder:GetChildren()) do
+-- 					if v.Upgrade_Folder.Upgrade_Cost.Value <= game:GetService("Players").LocalPlayer.Yen.Value and game:GetService("Players").LocalPlayer.UnitsFolder.Beru.Upgrade_Folder.Level.Value ~= game:GetService("Players").LocalPlayer.UnitsFolder.Beru.Level+1 then
+-- 						game:GetService("GuiService").SelectedCoreObject = game.Players.LocalPlayer.PlayerGui.HUD.InGame.UnitsManager.Main.Main.ScrollingFrame[v.Name].Upgrade
+-- 						game:GetService("VirtualInputManager"):SendKeyEvent(true, Enum.KeyCode.Return, false, game)
+-- 						game:GetService("VirtualInputManager"):SendKeyEvent(false, Enum.KeyCode.Return, false, game)
+--                     else
+--                         if game:GetService("GuiService").SelectedCoreObject == game.Players.LocalPlayer.PlayerGui.HUD.InGame.UnitsManager.Main.Main.ScrollingFrame[v.Name].Upgrade then
+--                             game:GetService("GuiService").SelectedCoreObject = nil
+--                         end
+--                     end
+-- 				end
+--             end
+--         end)
+--     end
+-- end)
+
+-- task.spawn(function()
+--     while task.wait() do
+--         pcall(function()
+--             if game.Players.LocalPlayer:FindFirstChild("YenCD") then
+--                 game.Players.LocalPlayer.YenCD:Destroy()
+--             end
+--             for i,v in pairs(game:GetService("Players").LocalPlayer:GetChildren()) do
+--                 if string.find(v.Name,"Send CD") then
+--                     v:Destroy()
+--                 end
+--             end
+--             for i,v in pairs(workspace.Visual:GetChildren()) do
+--                 if v:IsA("Model") then
+--                    local vim = game:GetService("VirtualInputManager")
+
+--                     local x = workspace.CurrentCamera.ViewportSize.X / 2
+--                     local y = workspace.CurrentCamera.ViewportSize.Y / 2
+--                     vim:SendMouseButtonEvent(x, y, 0, true, game, 0)
+--                     vim:SendMouseButtonEvent(x, y, 0, false, game, 0)
+--                 end
+--             end
+--         end)
+--     end
+-- end)
+
+
+-- task.spawn(function() -- Auto Next
+--     while task.wait() do
+--         pcall(function()
+--             if getgenv().AutoNext then
+--                 if ReplicatedStorage.Values.Game.VoteNext.VoteEnabled and LocalPlayer.PlayerGui.RewardsUI.Main.Visible and LocalPlayer.PlayerGui.RewardsUI.Main.LeftSide.Button.Next.Visible then
+--                     ReplicatedStorage.Remote.Server.OnGame.Voting.VoteNext:FireServer()
+--                     wait(1)
+--                 else
+--                     if not ReplicatedStorage.Values.Game.VoteNext.VoteEnabled and LocalPlayer.PlayerGui.RewardsUI.Enabled then
+--                         LocalPlayer.PlayerGui.RewardsUI.Enabled = false
+--                         if game.Players.LocalPlayer.PlayerGui.RewardsUI.Main.Visible then
+--                             game.Players.LocalPlayer.PlayerGui.RewardsUI.Main.Visible = false
+--                         end
+--                     end
+--                 end
+-- 			end
+--         end)
+--     end
+-- end)
+
+-- task.spawn(function() -- Auto Up Stats
+-- 	while wait(0.1) do
+-- 		pcall(function()
+-- 			if getgenv().AutoUpMaxYen then
+-- 				PlayerStats:FireServer("YenMaxLevel")
+-- 			end
+-- 			if getgenv().AutoUpTowerHealth then
+-- 				PlayerStats:FireServer("BaseHealthLevel")
+-- 			end
+-- 			if getgenv().AutoUpYenGeneration then
+-- 				PlayerStats:FireServer("YenGenarateLevel")
+-- 			end
+-- 		end)
+-- 	end
+-- end)
+
+-- task.spawn(function() -- Anti AFK
+--     LocalPlayer.Idled:Connect(function()
+--         game:GetService("VirtualUser"):CaptureController()
+--         game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+--     end)
+-- end)
+
+-- WindUI:Notify({
+-- 	Title = "Script Loaded.",
+-- 	Content = "You can use the script now!",
+-- 	Icon = "",
+-- 	Duration = 5,
+-- 	Background = "rbxassetid://13511292247"
+-- })
